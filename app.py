@@ -1,6 +1,19 @@
+import streamlit as st
+import pandas as pd
+import joblib
+
+# Load trained model
+model = joblib.load("sensor_model.pkl")
+
+# App Title
+st.title("AI Smart Sensor Fault Diagnosis System")
+
+# ----------------------------
+# SAMPLE FILE DOWNLOAD SECTION
+# ----------------------------
 st.subheader("Download Sample Files")
 
-# Sample 1 - Normal
+# Normal Sample
 normal_sample = """value
 25.1
 25.2
@@ -19,7 +32,7 @@ st.download_button(
     mime="text/csv"
 )
 
-# Sample 2 - Noise
+# Noise Sample
 noise_sample = """value
 25
 40
@@ -41,3 +54,37 @@ st.download_button(
     file_name="noise_sample.csv",
     mime="text/csv"
 )
+
+# ----------------------------
+# FILE UPLOAD SECTION
+# ----------------------------
+st.subheader("Upload Sensor CSV")
+
+uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
+
+if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
+
+    # Safety check
+    if "value" not in data.columns:
+        st.error("CSV must contain a column named 'value'")
+    else:
+        st.subheader("Sensor Signal")
+        st.line_chart(data["value"])
+
+        # Feature extraction
+        mean = data["value"].mean()
+        std = data["value"].std()
+
+        # Prediction
+        prediction = model.predict([[mean, std]])
+
+        labels = {
+            0: "Normal",
+            1: "Noise Fault",
+            2: "Drift Fault",
+            3: "Stuck Fault"
+        }
+
+        st.subheader("Diagnosis Result")
+        st.success(f"Fault Type: {labels[prediction[0]]}")
