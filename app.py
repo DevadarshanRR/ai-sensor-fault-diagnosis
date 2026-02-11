@@ -25,7 +25,7 @@ st.divider()
 # -------------------------
 # QUICK TEST SECTION
 # -------------------------
-st.subheader("Quick Test (Mobile Friendly)")
+st.subheader("Quick Test")
 
 data = None
 
@@ -50,7 +50,7 @@ st.divider()
 # -------------------------
 # FILE UPLOAD SECTION
 # -------------------------
-st.subheader("Upload Your Own Sensor Data (Desktop Recommended)")
+st.subheader("Upload Sensor Data")
 
 uploaded_file = st.file_uploader(
     "Upload CSV file with a column named 'value'",
@@ -90,7 +90,6 @@ if data is not None:
     fault_type = labels[prediction[0]]
     confidence = round(np.max(probabilities) * 100, 2)
 
-    # Health score logic
     if fault_type == "Normal":
         health_score = 100
         st.success(f"Status: {fault_type}")
@@ -108,9 +107,7 @@ if data is not None:
 
     st.divider()
 
-    # -------------------------
-    # GAUGE METER
-    # -------------------------
+    # Gauge
     st.subheader("Sensor Health Indicator")
 
     fig = go.Figure(go.Indicator(
