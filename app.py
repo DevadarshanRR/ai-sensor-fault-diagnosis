@@ -10,21 +10,6 @@ import plotly.graph_objects as go
 st.set_page_config(page_title="AI Sensor Fault Diagnosis", layout="centered")
 
 # -------------------------
-# THEME TOGGLE
-# -------------------------
-theme = st.radio("Select Theme", ["Light Mode", "Dark Mode"])
-
-if theme == "Dark Mode":
-    st.markdown(
-        """
-        <style>
-        body {background-color: #0E1117; color: white;}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# -------------------------
 # LOAD MODEL
 # -------------------------
 model = joblib.load("sensor_model.pkl")
@@ -32,22 +17,15 @@ model = joblib.load("sensor_model.pkl")
 # -------------------------
 # HEADER
 # -------------------------
-st.markdown(
-    "<h1 style='text-align: center; color: #2E86C1;'>AI Smart Sensor Fault Diagnosis System</h1>",
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "<p style='text-align: center;'>Machine Learning-powered sensor monitoring dashboard</p>",
-    unsafe_allow_html=True
-)
+st.title("AI Smart Sensor Fault Diagnosis System")
+st.caption("Machine Learning-powered sensor health monitoring dashboard")
 
 st.divider()
 
 # -------------------------
-# QUICK TEST
+# QUICK TEST SECTION
 # -------------------------
-st.subheader("📱 Quick Test (Mobile Friendly)")
+st.subheader("Quick Test (Mobile Friendly)")
 
 data = None
 
@@ -70,9 +48,9 @@ with col2:
 st.divider()
 
 # -------------------------
-# FILE UPLOAD
+# FILE UPLOAD SECTION
 # -------------------------
-st.subheader("💻 Upload Your Own Sensor Data")
+st.subheader("Upload Your Own Sensor Data (Desktop Recommended)")
 
 uploaded_file = st.file_uploader(
     "Upload CSV file with a column named 'value'",
@@ -91,7 +69,7 @@ if uploaded_file is not None:
 # -------------------------
 if data is not None:
 
-    st.subheader("📈 Sensor Signal Visualization")
+    st.subheader("Sensor Signal Visualization")
     st.line_chart(data["value"])
 
     mean = data["value"].mean()
@@ -112,15 +90,13 @@ if data is not None:
     fault_type = labels[prediction[0]]
     confidence = round(np.max(probabilities) * 100, 2)
 
-    st.divider()
-    st.subheader("🔍 Diagnosis Result")
-
+    # Health score logic
     if fault_type == "Normal":
-        st.success(f"✅ Status: {fault_type}")
         health_score = 100
+        st.success(f"Status: {fault_type}")
     else:
-        st.error(f"⚠️ Status: {fault_type}")
-        health_score = 100 - confidence
+        health_score = max(0, 100 - confidence)
+        st.error(f"Status: {fault_type}")
 
     colA, colB = st.columns(2)
 
@@ -130,27 +106,29 @@ if data is not None:
     with colB:
         st.metric("Health Score (%)", round(health_score, 2))
 
+    st.divider()
+
     # -------------------------
     # GAUGE METER
     # -------------------------
-    st.subheader("📊 Health Indicator")
+    st.subheader("Sensor Health Indicator")
 
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=health_score,
-        title={'text': "Sensor Health"},
+        title={'text': "Health Score"},
         gauge={
             'axis': {'range': [0, 100]},
-            'bar': {'color': "green" if health_score > 70 else "orange" if health_score > 40 else "red"},
+            'bar': {'color': "green"},
             'steps': [
                 {'range': [0, 40], 'color': "red"},
                 {'range': [40, 70], 'color': "orange"},
-                {'range': [70, 100], 'color': "green"}
+                {'range': [70, 100], 'color': "lightgreen"}
             ],
         }
     ))
 
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
     explanations = {
         "Normal": "Sensor is operating within expected range.",
@@ -162,4 +140,4 @@ if data is not None:
     st.info(explanations[fault_type])
 
 st.divider()
-st.caption("Developed using Python, Machine Learning, Plotly, and Streamlit.")
+st.caption("Built using Python, Machine Learning, Plotly, and Streamlit.")
