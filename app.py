@@ -25,3 +25,6 @@ if uploaded_file:
         2: "Drift Fault",
         3: "Stuck Fault"
     }
+    
+    st.subheader("Diagnosis Result")
+    st.success(f"Fault Type: {labels[prediction[0]]}")
