@@ -6,6 +6,22 @@ model = joblib.load("sensor_model.pkl")
 
 st.title("AI Smart Sensor Fault Diagnosis System")
 
+# Sample CSV download
+sample_data = """value
+25.1
+25.2
+24.9
+25.0
+25.3
+"""
+
+st.download_button(
+    label="Download Sample CSV",
+    data=sample_data,
+    file_name="sample_sensor_data.csv",
+    mime="text/csv"
+)
+
 uploaded_file = st.file_uploader("Upload Sensor CSV")
 
 if uploaded_file:
