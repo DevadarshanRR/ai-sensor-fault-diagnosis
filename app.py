@@ -1,46 +1,43 @@
-import streamlit as st
-import pandas as pd
-import joblib
+st.subheader("Download Sample Files")
 
-model = joblib.load("sensor_model.pkl")
-
-st.title("AI Smart Sensor Fault Diagnosis System")
-
-# Sample CSV download
-sample_data = """value
+# Sample 1 - Normal
+normal_sample = """value
 25.1
 25.2
 24.9
 25.0
 25.3
+25.1
+25.2
+25.0
 """
 
 st.download_button(
-    label="Download Sample CSV",
-    data=sample_data,
-    file_name="sample_sensor_data.csv",
+    label="Download Normal Sample",
+    data=normal_sample,
+    file_name="normal_sample.csv",
     mime="text/csv"
 )
 
-uploaded_file = st.file_uploader("Upload Sensor CSV")
+# Sample 2 - Noise
+noise_sample = """value
+25
+40
+10
+35
+15
+30
+20
+45
+12
+38
+18
+33
+"""
 
-if uploaded_file:
-    data = pd.read_csv(uploaded_file)
-    
-    st.subheader("Sensor Signal")
-    st.line_chart(data["value"])
-    
-    mean = data["value"].mean()
-    std = data["value"].std()
-    
-    prediction = model.predict([[mean, std]])
-    
-    labels = {
-        0: "Normal",
-        1: "Noise Fault",
-        2: "Drift Fault",
-        3: "Stuck Fault"
-    }
-    
-    st.subheader("Diagnosis Result")
-    st.success(f"Fault Type: {labels[prediction[0]]}")
+st.download_button(
+    label="Download Noise Sample",
+    data=noise_sample,
+    file_name="noise_sample.csv",
+    mime="text/csv"
+)
