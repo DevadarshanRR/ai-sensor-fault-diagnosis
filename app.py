@@ -1,4 +1,4 @@
-import streamlit as st
+8import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
@@ -50,7 +50,7 @@ st.divider()
 # -------------------------
 # FILE UPLOAD SECTION
 # -------------------------
-st.subheader("Upload Sensor Data")
+st.subheader("Upload Your Sensor Data ")
 
 uploaded_file = st.file_uploader(
     "Upload CSV file with a column named 'value'",
