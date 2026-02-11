@@ -7,12 +7,78 @@ import numpy as np
 model = joblib.load("sensor_model.pkl")
 
 st.title("AI Smart Sensor Fault Diagnosis System")
-st.markdown("Intelligent fault detection using machine learning.")
+st.markdown("Machine Learning-based sensor fault detection dashboard.")
 
-# -----------------------------
-# QUICK TEST SECTION
-# -----------------------------
-st.subheader("Quick Test (Mobile Friendly)")
+# ------------------------------------------------
+# DOWNLOAD SAMPLE FILES (For Desktop Users)
+# ------------------------------------------------
+st.subheader("Download Sample CSV Files")
+
+normal_sample = """value
+25.1
+25.2
+24.9
+25.0
+25.3
+25.1
+25.2
+25.0
+"""
+
+noise_sample = """value
+25
+40
+10
+35
+15
+30
+20
+45
+12
+38
+18
+33
+"""
+
+drift_sample = """value
+20
+22
+24
+26
+28
+30
+32
+34
+36
+38
+40
+"""
+
+st.download_button(
+    label="Download Normal Sample",
+    data=normal_sample,
+    file_name="normal_sample.csv",
+    mime="text/csv"
+)
+
+st.download_button(
+    label="Download Noise Sample",
+    data=noise_sample,
+    file_name="noise_sample.csv",
+    mime="text/csv"
+)
+
+st.download_button(
+    label="Download Drift Sample",
+    data=drift_sample,
+    file_name="drift_sample.csv",
+    mime="text/csv"
+)
+
+# ------------------------------------------------
+# QUICK TEST SECTION (Mobile Friendly)
+# ------------------------------------------------
+st.subheader("Quick Test (No Upload Required)")
 
 data = None
 
@@ -32,10 +98,10 @@ with col2:
     if st.button("Test Stuck"):
         data = pd.DataFrame({"value":[30,30,30,30,30,30,30,30,30]})
 
-# -----------------------------
-# FILE UPLOAD
-# -----------------------------
-st.subheader("Upload Sensor CSV (Desktop Recommended)")
+# ------------------------------------------------
+# FILE UPLOAD SECTION
+# ------------------------------------------------
+st.subheader("Upload Sensor CSV")
 
 uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
@@ -46,9 +112,9 @@ if uploaded_file is not None:
     else:
         data = uploaded_data
 
-# -----------------------------
+# ------------------------------------------------
 # PROCESSING SECTION
-# -----------------------------
+# ------------------------------------------------
 if data is not None:
 
     st.subheader("Sensor Signal")
@@ -83,8 +149,6 @@ if data is not None:
 
     st.metric("Confidence Level (%)", confidence)
     st.metric("Health Score (%)", round(health_score, 2))
-
-    st.subheader("Fault Explanation")
 
     explanations = {
         "Normal": "Sensor is operating within expected range.",
