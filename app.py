@@ -25,5 +25,3 @@ if uploaded_file:
         2: "Drift Fault",
         3: "Stuck Fault"
     }
-    
-    st.
